@@ -1,0 +1,30 @@
+body {
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* .jumbotron {
+  text-align: center;
+  background-color: transparent;
+  color: black;
+  border-radius: 0;
+  border-bottom: 10px solid #000000;
+} */
+
+.navbar {
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 2rem;
+}
+
+/* temp section for page layout */
+.col-3 {
+  background-color: lightblue;
+}
+#city-summary {
+  background-color: lightgoldenrodyellow;
+}
+#five-day-deck {
+  background-color: lightgrey;
+}
