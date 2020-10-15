@@ -17,19 +17,21 @@
 
     <main class="container">
       <div class="row">
-        <div class="col-3" id="search-history">search area
+        <div class="col-2" id="search-history">search area
           <input class="subject" id="search-input" placeholder="Enter a City"></input>
           <button class="search" id="search-button">Search</button>
           <!-- prepend city search history here -->
           <div id="search-list"></div>
         </div>
-        <div class="col-9">
+        <div class="col-10">
           <div class="row">
             <div class="col" id="city-summary"></div>
           </div>
-          <hr />
-          <div class="row" id="five-day-deck">
-            <div class="col">5-Day Forecast</div>
+          <hr/>
+          <div class="row">
+            <div class="col" id="five-day-deck">5-Day Forecast
+              <div class="card-deck" id="forecast-card-deck"></div>
+            </div>
           </div>
         </div>
       </div>
