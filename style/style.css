@@ -28,6 +28,11 @@ button:hover {
 p {
   font-size: 0.75rem;
 }
+
+h6 {
+  font-size: 0.75rem;
+}
+
 #search-button {
   background-color: gray;
 }
@@ -48,9 +53,14 @@ p {
   height: 50px;
   width: 50px;
 }
-/* temp section for page layout */
+
+.forecast-card-body {
+  padding: 10px;
+}
+
 .col-3 {
-  background-color: lightgrey;
+  padding: 10px;
+  background-color: lavender;
 }
 
 .green {
@@ -67,11 +77,4 @@ p {
 
 .red {
   background-color: red;
-}
-
-#city-summary {
-  /* background-color: lightgoldenrodyellow; */
-}
-#five-day-deck {
-  /* background-color: lightgrey; */
 }

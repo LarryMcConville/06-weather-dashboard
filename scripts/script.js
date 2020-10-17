@@ -60,19 +60,17 @@ function UVIndex(lat, lon) {
 //https://www.epa.gov/sunsafety/uv-index-scale-0
 function UVIndexScale(indexValue) {
   if (indexValue > 0 && indexValue < 2.5) {
-    uvIndexColor = "card-text city-card-text green";
+    uvIndexSpan = "green";
   } else if (indexValue > 2.5 && indexValue < 5) {
-    uvIndexColor = "card-text city-card-text yellow";
+    uvIndexSpan = "yellow";
   } else if (indexValue > 5 && indexValue < 7) {
-    uvIndexColor = "card-text city-card-text orange";
+    uvIndexSpan = "orange";
   } else {
-    uvIndexColor = "card-text city-card-text red";
+    uvIndexSpan = "red";
   }
-  $("<p>")
-    .attr("class", uvIndexColor)
-    .attr("id", "uv-index")
-    .text("UV Index: " + indexValue)
-    .appendTo("#city-summary");
+  var uvIndexSpan = $("<span>").attr("class", uvIndexSpan).text(indexValue);
+  var uvIndexH5 = $("<h5>").attr("class", "card-text city-card-text").attr("id", "uv-index").text("UV Index: ").append(uvIndexSpan);
+  $(".city-card-body").append(uvIndexH5);
 }
 
 function searchCityForecast() {
@@ -110,17 +108,19 @@ function renderCityWeather(cityName, cityDate, cityTemp, cityHumidity, cityWindS
     .attr("class", "card-title city-card-title")
     .text(cityName + " (" + cityDate + ")");
   $("<img>").attr("class", "icon").attr("src", cityIconURL).attr("alt", "Weather Icon").appendTo(cardCity);
-  var cardTemp = $("<p>")
+  var cardTemp = $("<h5>")
     .attr("class", "card-text city-card-text")
     .text("Temperature: " + cityTemp + " °F");
-  var cardHumidity = $("<p>")
+  var cardHumidity = $("<h5>")
     .attr("class", "card-text city-card-text")
     .text("Humidity: " + cityHumidity + " %");
-  var cardWindSpeed = $("<p>")
+  var cardWindSpeed = $("<h5>")
     .attr("class", "card-text city-card-text")
     .text("Wind Speed: " + cityWindSpeed + " MPH");
   //var cardCityUV = $("<p>").attr("class", "card-text city-card-text").attr("id", "uv-index");
-  $("#city-summary").append(card, cardBody, cardCity, cardTemp, cardHumidity, cardWindSpeed);
+  $(cardBody).append(cardCity, cardTemp, cardHumidity, cardWindSpeed);
+  $(card).append(cardBody);
+  $("#city-summary").append(card);
 }
 
 function renderCityForecast(forecastDate, forecastTemp, forecastHumidity, forecastIconURL) {
