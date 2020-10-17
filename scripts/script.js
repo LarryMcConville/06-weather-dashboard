@@ -25,7 +25,6 @@ function searchCityWeather() {
   var baseURL = "http://api.openweathermap.org/data/2.5/weather?q=";
   var locationURL = cityToSearch;
   var locationUnits = "&units=imperial";
-  //var apiKey = "&APPID=f97d09aad6f01e913a987bee4e1619fb";
   var queryURL = baseURL + locationURL + locationUnits + apiKey;
 
   $.ajax({
@@ -33,7 +32,7 @@ function searchCityWeather() {
     method: "GET",
   }).then(function (response) {
     var cityName = response.name;
-    var cityDate = moment.unix(response.dt).format("YYYY-MM-DD");
+    var cityDate = moment.unix(response.dt).format("MM/DD/YYYY");
     var cityIcon = response.weather[0].icon;
     var cityIconURL = "http://openweathermap.org/img/w/" + cityIcon + ".png";
     var cityTemp = response.main.temp;
@@ -41,30 +40,43 @@ function searchCityWeather() {
     var cityWindSpeed = response.wind.speed;
     var cityLat = response.coord.lat;
     var cityLon = response.coord.lon;
-    //TODO:UV indicator
-    var cityUV = UVIndex(cityLat, cityLon);
-    console.log("cityUV: " + cityUV);
 
-    renderCityWeather(cityName, cityDate, cityTemp, cityHumidity, cityWindSpeed, cityUV, cityIconURL);
+    renderCityWeather(cityName, cityDate, cityTemp, cityHumidity, cityWindSpeed, cityIconURL);
+    UVIndex(cityLat, cityLon);
   });
 }
 
+//call current UV data.
 function UVIndex(lat, lon) {
-  var cityUV = "";
-
-  queryURL = "http://api.openweathermap.org/data/2.5/uvi/forecast?&appid=f97d09aad6f01e913a987bee4e1619fb&lat=" + lat + "&lon=" + lon;
+  queryURL = "http://api.openweathermap.org/data/2.5/uvi?lat=" + lat + "&lon=" + lon + "&appid=f97d09aad6f01e913a987bee4e1619fb";
   $.ajax({
     url: queryURL,
     method: "GET",
   }).then(function (response) {
-    console.log(response[0].value);
-    cityUV = response[0].value;
+    UVIndexScale(response.value);
   });
-  return cityUV;
+}
+
+//https://www.epa.gov/sunsafety/uv-index-scale-0
+function UVIndexScale(indexValue) {
+  if (indexValue > 0 && indexValue < 2.5) {
+    uvIndexColor = "card-text city-card-text green";
+  } else if (indexValue > 2.5 && indexValue < 5) {
+    uvIndexColor = "card-text city-card-text yellow";
+  } else if (indexValue > 5 && indexValue < 7) {
+    uvIndexColor = "card-text city-card-text orange";
+  } else {
+    uvIndexColor = "card-text city-card-text red";
+  }
+  $("<p>")
+    .attr("class", uvIndexColor)
+    .attr("id", "uv-index")
+    .text("UV Index: " + indexValue)
+    .appendTo("#city-summary");
 }
 
 function searchCityForecast() {
-  var baseURL = "https://api.openweathermap.org/data/2.5/forecast?q=";
+  var baseURL = "http://api.openweathermap.org/data/2.5/forecast?q=";
   var locationURL = cityToSearch;
   var locationUnits = "&units=imperial";
   //var apiKey = "&APPID=f97d09aad6f01e913a987bee4e1619fb";
@@ -77,7 +89,7 @@ function searchCityForecast() {
     //loop through forecasted days and pull the 12:00 time.
     for (var i = 0; i < response.list.length; i++) {
       if (response.list[i].dt_txt[12] === "2") {
-        var forecastDate = moment.unix(response.list[i].dt).format("YYYY-MM-DD");
+        var forecastDate = moment.unix(response.list[i].dt).format("MM/DD/YYYY");
         var forecastTemp = response.list[i].main.temp;
         var forecastHumidity = response.list[i].main.humidity;
         var forecastIcon = response.list[i].weather[0].icon;
@@ -89,8 +101,7 @@ function searchCityForecast() {
   });
 }
 
-function renderCityWeather(cityName, cityDate, cityTemp, cityHumidity, cityWindSpeed, cityUV, cityIconURL) {
-  //TODO:need to lookup UV indicator
+function renderCityWeather(cityName, cityDate, cityTemp, cityHumidity, cityWindSpeed, cityIconURL) {
   $("#city-summary").empty();
   $("#forecast-card-deck").empty();
   var card = $("<div>").attr("class", "card city-card");
@@ -108,32 +119,31 @@ function renderCityWeather(cityName, cityDate, cityTemp, cityHumidity, cityWindS
   var cardWindSpeed = $("<p>")
     .attr("class", "card-text city-card-text")
     .text("Wind Speed: " + cityWindSpeed + " MPH");
-  var cardCityUV = $("<p>")
-    .attr("class", "card-text city-card-text")
-    .text("UV Index: " + cityUV);
-  $("#city-summary").append(card, cardBody, cardCity, cardTemp, cardHumidity, cardWindSpeed, cardCityUV);
+  //var cardCityUV = $("<p>").attr("class", "card-text city-card-text").attr("id", "uv-index");
+  $("#city-summary").append(card, cardBody, cardCity, cardTemp, cardHumidity, cardWindSpeed);
 }
 
 function renderCityForecast(forecastDate, forecastTemp, forecastHumidity, forecastIconURL) {
-  var card = $("<div>").attr("class", "card forecast-card");
-  //var cardBody = $("<div>").attr("class", "card-body forecast-card-body");
-  var cardDate = $("<h6>").attr("class", "card-title forecast-card-title").text(forecastDate);
-  var cardIcon = $("<img>").attr("class", "icon").attr("src", forecastIconURL).attr("alt", "Weather Icon");
-  var cardTemp = $("<p>")
+  var card = $("<div>").attr("class", "card bg-light forecast-card");
+  var cardBody = $("<div>").attr("class", "card-body forecast-card-body");
+  $("<h6>").attr("class", "card-title forecast-card-title").text(forecastDate).appendTo(cardBody);
+  $("<img>").attr("class", "icon").attr("src", forecastIconURL).attr("alt", "Weather Icon").appendTo(cardBody);
+  $("<p>")
     .attr("class", "card-text forecast-card-text")
-    .text("Temp: " + forecastTemp + " °F");
-  var cardHumidity = $("<p>")
+    .text("Temp: " + forecastTemp + " °F")
+    .appendTo(cardBody);
+  $("<p>")
     .attr("class", "card-text forecast-card-text")
-    .text("Humidity: " + forecastHumidity + " %");
-  $(card).append(cardDate, cardIcon, cardTemp, cardHumidity);
+    .text("Humidity: " + forecastHumidity + " %")
+    .appendTo(cardBody);
+  $(card).append(cardBody);
   $("#forecast-card-deck").append(card);
 }
 
 function renderCityHistory() {
   $("#search-list").empty();
-  //$("<button>").attr("class", "button").attr("id", "clear-history").text("Clear History").appendTo("#search-list");
   for (var i = 0; i < cityHistory.length; i++) {
-    var historyBtn = $("<button>").attr("class", "button").text(cityHistory[i].location);
+    var historyBtn = $("<button>").attr("class", "button history-button").text(cityHistory[i].location);
     $("#search-list").prepend(historyBtn);
   }
 }
@@ -150,12 +160,9 @@ function getCitiesFromStorage() {
 function saveCityToStorage() {
   //https://www.tutorialrepublic.com/faq/how-to-check-if-an-array-includes-an-object-in-javascript.php
   //if city not in city history array, add it
-  //FIXME:includes is not working...
   if (cityHistory.some((city) => city.location === cityToSearch)) {
-    console.log("Match");
+    return;
   } else {
-    console.log("No Match");
-
     var newCity = {
       location: cityToSearch,
     };
@@ -163,9 +170,8 @@ function saveCityToStorage() {
     localStorage.setItem("cityhistory", JSON.stringify(cityHistory));
 
     renderCityHistory();
+    location.reload();
   }
-
-  //console.log(cityHistory);
 }
 
 $("#search-button").click(function (event) {
@@ -177,14 +183,14 @@ $("#search-button").click(function (event) {
     return;
   }
 
-  console.log(cityToSearch);
   saveCityToStorage();
   searchCityWeather();
   searchCityForecast();
 });
 
-// $("#clear-history").click(function (event) {
-//   alert("Clear History?");
-//   localStorage.clear();
-//   $("#search-list").empty();
-// });
+$(".history-button").click(function (event) {
+  event.preventDefault();
+  cityToSearch = $(this).text().trim();
+  searchCityWeather();
+  searchCityForecast();
+});

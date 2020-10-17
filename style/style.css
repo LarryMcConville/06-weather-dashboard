@@ -25,14 +25,23 @@ button:hover {
   border: 2px solid rgb(53, 53, 53);
 }
 
+p {
+  font-size: 0.75rem;
+}
 #search-button {
   background-color: gray;
+}
+#search-input {
+  width: 100%;
 }
 
 .navbar {
   background-color: #000000;
   color: #ffffff;
-  font-size: 2rem;
+  font-size: 2.5rem;
+  display: inline-block;
+  width: 100%;
+  text-align: center;
 }
 
 .icon {
@@ -41,11 +50,28 @@ button:hover {
 }
 /* temp section for page layout */
 .col-3 {
-  background-color: lightblue;
+  background-color: lightgrey;
 }
+
+.green {
+  background-color: green;
+}
+
+.yellow {
+  background-color: yellow;
+}
+
+.orange {
+  background-color: orange;
+}
+
+.red {
+  background-color: red;
+}
+
 #city-summary {
-  background-color: lightgoldenrodyellow;
+  /* background-color: lightgoldenrodyellow; */
 }
 #five-day-deck {
-  background-color: lightgrey;
+  /* background-color: lightgrey; */
 }
