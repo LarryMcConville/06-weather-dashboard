@@ -19,7 +19,7 @@ function init() {
 
 function searchCityWeather() {
   //build/submit ajax query
-  var baseURL = "http://api.openweathermap.org/data/2.5/weather?q=";
+  var baseURL = "https://api.openweathermap.org/data/2.5/weather?q=";
   var locationURL = cityToSearch;
   var locationUnits = "&units=imperial";
   var queryURL = baseURL + locationURL + locationUnits + apiKey;
@@ -31,7 +31,7 @@ function searchCityWeather() {
     var cityName = response.name;
     var cityDate = moment.unix(response.dt).format("MM/DD/YYYY");
     var cityIcon = response.weather[0].icon;
-    var cityIconURL = "http://openweathermap.org/img/w/" + cityIcon + ".png";
+    var cityIconURL = "https://openweathermap.org/img/w/" + cityIcon + ".png";
     var cityTemp = response.main.temp;
     var cityHumidity = response.main.humidity;
     var cityWindSpeed = response.wind.speed;
@@ -45,7 +45,7 @@ function searchCityWeather() {
 
 //call current UV data.
 function UVIndex(lat, lon) {
-  queryURL = "http://api.openweathermap.org/data/2.5/uvi?lat=" + lat + "&lon=" + lon + "&appid=f97d09aad6f01e913a987bee4e1619fb";
+  queryURL = "https://api.openweathermap.org/data/2.5/uvi?lat=" + lat + "&lon=" + lon + "&appid=f97d09aad6f01e913a987bee4e1619fb";
   $.ajax({
     url: queryURL,
     method: "GET",
@@ -73,7 +73,7 @@ function UVIndexScale(indexValue) {
 }
 
 function searchCityForecast() {
-  var baseURL = "http://api.openweathermap.org/data/2.5/forecast?q=";
+  var baseURL = "https://api.openweathermap.org/data/2.5/forecast?q=";
   var locationURL = cityToSearch;
   var locationUnits = "&units=imperial";
   var queryURL = baseURL + locationURL + locationUnits + apiKey;
@@ -89,7 +89,7 @@ function searchCityForecast() {
         var forecastTemp = response.list[i].main.temp;
         var forecastHumidity = response.list[i].main.humidity;
         var forecastIcon = response.list[i].weather[0].icon;
-        var forecastIconURL = "http://openweathermap.org/img/w/" + forecastIcon + ".png";
+        var forecastIconURL = "https://openweathermap.org/img/w/" + forecastIcon + ".png";
 
         renderCityForecast(forecastDate, forecastTemp, forecastHumidity, forecastIconURL);
       }
