@@ -34,7 +34,8 @@ h6 {
 }
 
 #search-button {
-  background-color: gray;
+  background-color: #563d7c;
+  border: 2px solid #563d7c;
 }
 #search-input {
   width: 100%;
@@ -77,4 +78,8 @@ h6 {
 
 .red {
   background-color: red;
+}
+
+.purple {
+  background-color: purple;
 }

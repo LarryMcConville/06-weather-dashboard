@@ -8,16 +8,13 @@ init();
 
 function init() {
   getCitiesFromStorage();
-  //if local storage not null
   //if a search history exists, load the last searched city.
   if (loadLastCity) {
-    cityToSearch = cityHistory[cityHistory.length - 1].location;
+    cityToSearch = cityHistory[cityHistory.length - 1];
     searchCityWeather();
     searchCityForecast();
     loadLastCity = false;
   }
-  //renderCityWeather();
-  //renderCityForecast();
 }
 
 function searchCityWeather() {
@@ -65,8 +62,10 @@ function UVIndexScale(indexValue) {
     uvIndexSpan = "yellow";
   } else if (indexValue > 5 && indexValue < 7) {
     uvIndexSpan = "orange";
-  } else {
+  } else if (indexValue > 7 && indexValue < 11) {
     uvIndexSpan = "red";
+  } else {
+    uvIndexSpan = "purple";
   }
   var uvIndexSpan = $("<span>").attr("class", uvIndexSpan).text(indexValue);
   var uvIndexH5 = $("<h5>").attr("class", "card-text city-card-text").attr("id", "uv-index").text("UV Index: ").append(uvIndexSpan);
@@ -77,7 +76,6 @@ function searchCityForecast() {
   var baseURL = "http://api.openweathermap.org/data/2.5/forecast?q=";
   var locationURL = cityToSearch;
   var locationUnits = "&units=imperial";
-  //var apiKey = "&APPID=f97d09aad6f01e913a987bee4e1619fb";
   var queryURL = baseURL + locationURL + locationUnits + apiKey;
 
   $.ajax({
@@ -117,7 +115,6 @@ function renderCityWeather(cityName, cityDate, cityTemp, cityHumidity, cityWindS
   var cardWindSpeed = $("<h5>")
     .attr("class", "card-text city-card-text")
     .text("Wind Speed: " + cityWindSpeed + " MPH");
-  //var cardCityUV = $("<p>").attr("class", "card-text city-card-text").attr("id", "uv-index");
   $(cardBody).append(cardCity, cardTemp, cardHumidity, cardWindSpeed);
   $(card).append(cardBody);
   $("#city-summary").append(card);
@@ -143,7 +140,7 @@ function renderCityForecast(forecastDate, forecastTemp, forecastHumidity, foreca
 function renderCityHistory() {
   $("#search-list").empty();
   for (var i = 0; i < cityHistory.length; i++) {
-    var historyBtn = $("<button>").attr("class", "button history-button").text(cityHistory[i].location);
+    var historyBtn = $("<button>").attr("class", "button history-button").text(cityHistory[i]);
     $("#search-list").prepend(historyBtn);
   }
 }
@@ -158,15 +155,11 @@ function getCitiesFromStorage() {
 }
 
 function saveCityToStorage() {
-  //https://www.tutorialrepublic.com/faq/how-to-check-if-an-array-includes-an-object-in-javascript.php
   //if city not in city history array, add it
-  if (cityHistory.some((city) => city.location === cityToSearch)) {
+  if (cityHistory.includes(cityToSearch)) {
     return;
   } else {
-    var newCity = {
-      location: cityToSearch,
-    };
-    cityHistory.push(newCity);
+    cityHistory.push(cityToSearch);
     localStorage.setItem("cityhistory", JSON.stringify(cityHistory));
 
     renderCityHistory();
